@@ -37,6 +37,5 @@
     }
   },
   "include": ["src/**/*"],
-  "references": [{ "path": "../shared" }],
   "exclude": ["node_modules", "dist"]
 }

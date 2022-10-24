@@ -2,10 +2,13 @@ import "dotenv/config";
 import "express-async-errors";
 
 import cors from "cors";
-import express from "express";
+import morgan from "morgan";
 import admin from "firebase-admin";
-import session from "express-session";
 import cookieParser from "cookie-parser";
+import session, { MemoryStore } from "express-session";
+import express, { NextFunction, Request, Response } from "express";
+
+import router from "./auth";
 
 const serviceAccount = require("../macfor-74649-firebase-adminsdk-egw6h-5248f636c6.json");
 
@@ -24,6 +27,16 @@ firestore.settings({
 const app = express();
 
 app.use(
+  session({
+    name: "__session",
+    saveUninitialized: false,
+    secret: "keyboard kat",
+    store: new MemoryStore(),
+    resave: false
+  })
+);
+
+app.use(
   express.urlencoded({
     extended: true
   })
@@ -37,13 +50,15 @@ app.use(
 
 app.use(cookieParser());
 
-app.use(
-  session({
-    saveUninitialized: true,
-    secret: "keyboard kat",
-    resave: true
-  })
-);
+app.use(morgan("dev"));
+
+app.use((err: Error, _: Request, res: Response, next: NextFunction) => {
+  if (err) {
+    res.status(403).json({ message: err.message });
+  }
+
+  next(err);
+});
 
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", req.headers.origin);
@@ -63,6 +78,8 @@ app.use(
     methods: "GET,HEAD,PUT,PATCH,POST,DELETE"
   })
 );
+
+app.use("/api/v1", router);
 
 app.listen(3001, () => {
   console.log(`SERVICE: api || PORT: ${3001} || ENV: ${process.env.NODE_ENV}`);
