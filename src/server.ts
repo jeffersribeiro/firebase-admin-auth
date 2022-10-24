@@ -4,11 +4,16 @@ import "express-async-errors";
 import cors from "cors";
 import morgan from "morgan";
 import admin from "firebase-admin";
+import session from "express-session";
 import cookieParser from "cookie-parser";
-import session, { MemoryStore } from "express-session";
-import express, { NextFunction, Request, Response } from "express";
+import express, { Request, Response } from "express";
 
 import router from "./auth";
+
+const { NODE_ENV } = process.env;
+
+const origin =
+  NODE_ENV === "development" ? "http://localhost:3000" : "https://web-skiuy5p3gq-uc.a.run.app";
 
 const serviceAccount = require("../macfor-74649-firebase-adminsdk-egw6h-5248f636c6.json");
 
@@ -26,15 +31,7 @@ firestore.settings({
 
 const app = express();
 
-app.use(
-  session({
-    name: "__session",
-    saveUninitialized: false,
-    secret: "keyboard kat",
-    store: new MemoryStore(),
-    resave: false
-  })
-);
+app.set("trust proxy", 1);
 
 app.use(
   express.urlencoded({
@@ -52,30 +49,18 @@ app.use(cookieParser());
 
 app.use(morgan("dev"));
 
-app.use((err: Error, _: Request, res: Response, next: NextFunction) => {
-  if (err) {
-    res.status(403).json({ message: err.message });
-  }
-
-  next(err);
-});
-
-app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", req.headers.origin);
-  res.header("Access-Control-Allow-Headers", "Set-Cookie");
-  res.header("Access-Control-Allow-Credentials", "true");
-
-  return next();
-});
-
 app.use(
   cors({
     credentials: true,
-    origin:
-      process.env.NODE_ENV === "development"
-        ? "http://localhost:3000"
-        : "https://web-skiuy5p3gq-uc.a.run.app",
-    methods: "GET,HEAD,PUT,PATCH,POST,DELETE"
+    origin
+  })
+);
+
+app.use(
+  session({
+    resave: false,
+    saveUninitialized: false,
+    secret: "session"
   })
 );
 

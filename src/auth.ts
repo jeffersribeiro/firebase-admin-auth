@@ -9,12 +9,17 @@ router.post("/login", async (req: Request, res: Response) => {
 
     const expiresIn = 60 * 60 * 24 * 5 * 1000;
 
-    const sessionCookie = await admin.auth().createSessionCookie(idToken, { expiresIn });
     const options: CookieOptions = {
       maxAge: expiresIn,
       secure: true,
-      domain: "firebase-admin-auth-skiuy5p3gq-uc.a.run.app"
+      httpOnly: true,
+      sameSite: "none",
+      domain: ".firebase-admin-auth-skiuy5p3gq-uc.a.run.app"
     };
+
+    const sessionCookie = await admin.auth().createSessionCookie(idToken, {
+      expiresIn
+    });
 
     res.cookie("__session", sessionCookie, options);
     res.end(JSON.stringify({ status: "success" }));
