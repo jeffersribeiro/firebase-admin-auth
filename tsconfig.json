@@ -5,6 +5,7 @@
     "lib": ["ESNext"],
     "strict": true,
     "noImplicitAny": false,
+    "typeRoots": ["./@types", "./node_module/@types"],
     "useUnknownInCatchVariables": false,
     "strictPropertyInitialization": false,
     "strictNullChecks": false,
@@ -14,7 +15,7 @@
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true,
     "composite": true,
-    "types": ["node"],
+    "types": ["node", "express"],
     "noEmitOnError": true,
     "allowUmdGlobalAccess": true,
     "noEmit": false,
@@ -36,6 +37,6 @@
       "@data/*": ["src/*"]
     }
   },
-  "include": ["src/**/*"],
+  "include": ["src/**/*", "@types", "dist/**/*.ts"],
   "exclude": ["node_modules", "dist"]
 }

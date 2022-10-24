@@ -4,7 +4,6 @@ import "express-async-errors";
 import cors from "cors";
 import morgan from "morgan";
 import admin from "firebase-admin";
-import session from "express-session";
 import cookieParser from "cookie-parser";
 import express, { Request, Response } from "express";
 
@@ -39,11 +38,7 @@ app.use(
   })
 );
 
-app.use(
-  express.json({
-    limit: "100mb"
-  })
-);
+app.use(express.json());
 
 app.use(cookieParser());
 
@@ -56,23 +51,7 @@ app.use(
   })
 );
 
-app.use(
-  session({
-    resave: false,
-    saveUninitialized: false,
-    secret: "session"
-  })
-);
-
 app.use("/api/v1", router);
-
-app.get("/", (_: Request, res: Response) => {
-  res.json({
-    service: "fiebase-admin-auth",
-    status: "ok",
-    version: "1.0.0"
-  });
-});
 
 app.listen(3001, () => {
   console.log(`SERVICE: api || PORT: ${3001} || ENV: ${process.env.NODE_ENV}`);
