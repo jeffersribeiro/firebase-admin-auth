@@ -1,5 +1,5 @@
 import * as admin from "firebase-admin";
-import { Router, Request, Response } from "express";
+import { Router, Request, Response, CookieOptions } from "express";
 
 const router = Router();
 
@@ -10,7 +10,11 @@ router.post("/login", async (req: Request, res: Response) => {
     const expiresIn = 60 * 60 * 24 * 5 * 1000;
 
     const sessionCookie = await admin.auth().createSessionCookie(idToken, { expiresIn });
-    const options = { maxAge: expiresIn, secure: true };
+    const options: CookieOptions = {
+      maxAge: expiresIn,
+      secure: true,
+      domain: "firebase-admin-auth-skiuy5p3gq-uc.a.run.app"
+    };
 
     res.cookie("__session", sessionCookie, options);
     res.end(JSON.stringify({ status: "success" }));
