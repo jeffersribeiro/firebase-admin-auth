@@ -6,7 +6,6 @@
   "scripts": {
     "build": "tsc --build && tsc --project tsconfig.json && tscpaths -p tsconfig.json -s ./src -o ./dist",
     "dev": "NODE_ENV=development ts-node-dev -r tsconfig-paths/register src/server.ts",
-    "dev:w": "set NODE_ENV=development&&ts-node-dev -r tsconfig-paths/register src/server.ts",
     "start": "NODE_ENV=production node ./dist/server.js",
     "format": "prettier --write **/*.{js,jsx,ts,tsx,json}"
   },

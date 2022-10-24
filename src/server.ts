@@ -81,6 +81,14 @@ app.use(
 
 app.use("/api/v1", router);
 
+app.get("/", (_: Request, res: Response) => {
+  res.json({
+    service: "fiebase-admin-auth",
+    status: "ok",
+    version: "1.0.0"
+  });
+});
+
 app.listen(3001, () => {
   console.log(`SERVICE: api || PORT: ${3001} || ENV: ${process.env.NODE_ENV}`);
 });
